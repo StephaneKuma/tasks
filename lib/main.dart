@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tasks/src/blocs/blocs.dart';
 import 'package:tasks/src/cubits/cubits.dart';
 import 'package:tasks/src/router/router.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
   BlocOverrides.runZoned(
     () {
       runApp(const MyApp());
@@ -23,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => ThemeCubit(),
+          create: (context) => ThemeCubit(),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(

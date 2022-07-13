@@ -42,11 +42,8 @@ class _HomePageState extends State<HomePage> {
                     : kcWhiteColor,
                 size: 20.0,
               ),
-              onPressed: () {
-                final status = state.status == ThemeStatus.light
-                    ? ThemeStatus.dark
-                    : ThemeStatus.light;
-                context.read<ThemeCubit>().onChangeTheme(status: status);
+              onPressed: () async {
+                context.read<ThemeCubit>().onChangeTheme();
                 var mode = state.status == ThemeStatus.dark ? 'Light' : 'Dark';
                 service.showNotification(
                   id: 0,
