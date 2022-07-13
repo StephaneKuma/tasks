@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tech.stkservices.tasks">
    <application
-        android:label="tasks"
+        android:label="STK Tasks"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
