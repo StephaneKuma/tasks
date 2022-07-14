@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tasks/src/cubits/cubits.dart';
 import 'package:tasks/src/services/notification_service.dart';
-import 'package:tasks/src/ui/helpers/helpers.dart';
 import 'package:tasks/src/ui/widgets/widgets.dart';
 
 class HomePage extends StatefulWidget {
@@ -37,9 +36,7 @@ class _HomePageState extends State<HomePage> {
                 state.status == ThemeStatus.light
                     ? Icons.nightlight_round
                     : Icons.sunny,
-                color: state.status == ThemeStatus.light
-                    ? Colors.black
-                    : kcWhiteColor,
+                color: Theme.of(context).iconTheme.color,
                 size: 20.0,
               ),
               onPressed: () async {
@@ -57,20 +54,18 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {},
                 icon: Icon(
                   Icons.person,
-                  color: state.status == ThemeStatus.light
-                      ? Colors.black
-                      : kcWhiteColor,
+                  color: Theme.of(context).iconTheme.color,
                   size: 20.0,
                 ),
               ),
             ],
           ),
-          body: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 20.0,
-              ),
+          body: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 5.0,
+            ),
+            child: SingleChildScrollView(
               child: Column(
                 children: const <Widget>[
                   AddTaskBar(),

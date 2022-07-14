@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasks/src/blocs/blocs.dart';
 import 'package:tasks/src/cubits/cubits.dart';
 import 'package:tasks/src/router/router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+  // await Hive.initFlutter();
   BlocOverrides.runZoned(
-    () {
-      runApp(const MyApp());
-    },
+    () => runApp(const MyApp()),
     blocObserver: AppBlocObserver(),
   );
 }
@@ -26,11 +24,26 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ThemeCubit(),
+          create: (_) => ThemeCubit(),
         ),
       ],
-      child: BlocBuilder<ThemeCubit, ThemeState>(
+      child: BlocConsumer<ThemeCubit, ThemeState>(
         buildWhen: (previous, current) => previous.status != current.status,
+        listener: (context, state) {
+          SharedPreferences.getInstance().then((prefs) {
+            String key = 'isDark';
+            bool isDark;
+
+            if (prefs.containsKey(key) && prefs.getBool(key) != null) {
+              isDark = prefs.getBool(key)!;
+            } else {
+              isDark = ThemeState.light().isDark;
+              prefs.setBool(key, isDark);
+            }
+
+            context.read<ThemeCubit>().onChangeTheme(mode: isDark);
+          });
+        },
         builder: (context, state) {
           return MaterialApp.router(
             theme: state.theme,

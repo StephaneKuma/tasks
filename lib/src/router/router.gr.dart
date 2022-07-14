@@ -20,11 +20,18 @@ class _$AppRouter extends RootStackRouter {
     HomeRoute.name: (routeData) {
       return MaterialPageX<dynamic>(
           routeData: routeData, child: const HomePage());
+    },
+    AddTaskRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+          routeData: routeData, child: const AddTaskPage());
     }
   };
 
   @override
-  List<RouteConfig> get routes => [RouteConfig(HomeRoute.name, path: '/')];
+  List<RouteConfig> get routes => [
+        RouteConfig(HomeRoute.name, path: '/'),
+        RouteConfig(AddTaskRoute.name, path: '/')
+      ];
 }
 
 /// generated route for
@@ -33,4 +40,12 @@ class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute() : super(HomeRoute.name, path: '/');
 
   static const String name = 'HomeRoute';
+}
+
+/// generated route for
+/// [AddTaskPage]
+class AddTaskRoute extends PageRouteInfo<void> {
+  const AddTaskRoute() : super(AddTaskRoute.name, path: '/');
+
+  static const String name = 'AddTaskRoute';
 }

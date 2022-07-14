@@ -2,33 +2,21 @@ part of 'theme_cubit.dart';
 
 enum ThemeStatus { light, dark }
 
-// ignore: must_be_immutable
 class ThemeState extends Equatable {
-  ThemeState._({
+  const ThemeState._({
     required this.status,
-    this.isDark,
-    this.theme,
-  }) {
-    _init();
-  }
+    required this.isDark,
+    required this.theme,
+  });
 
-  void _init() async {
-    var prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('isDark')) {
-      prefs.setBool('isDark', false);
-    }
+  ThemeState.light() : this._(status: ThemeStatus.light, isDark: false, theme: lightTheme());
 
-    isDark = prefs.getBool('isDark')!;
-  }
-
-  ThemeState.light() : this._(status: ThemeStatus.light, theme: lightTheme());
-
-  ThemeState.dark() : this._(status: ThemeStatus.dark, theme: darkTheme());
+  ThemeState.dark() : this._(status: ThemeStatus.dark, isDark: true, theme: darkTheme());
 
   final ThemeStatus status;
-  bool? isDark;
-  ThemeData? theme;
+  final bool isDark;
+  final ThemeData theme;
 
   @override
-  List<Object?> get props => [status, isDark, theme];
+  List<Object> get props => [status, isDark, theme];
 }

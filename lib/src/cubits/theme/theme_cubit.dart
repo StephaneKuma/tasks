@@ -10,24 +10,28 @@ class ThemeCubit extends Cubit<ThemeState> {
   // ignore: prefer_final_fields
   var _prefs = SharedPreferences.getInstance();
 
-  ThemeCubit() : super(ThemeState.light()) {
-    onChangeTheme();
-  }
+  ThemeCubit() : super(ThemeState.light());
 
-  void onChangeTheme() async {
-    var prefs = await _prefs;
-    var key = 'isDark';
-
-    if (prefs.containsKey(key)) {
-      var prefMode = prefs.getBool(key)!;
-
-      if (prefMode) {
-        emit(ThemeState.light());
-      } else {
-        emit(ThemeState.dark());
-      }
+  void onChangeTheme({bool? mode}) async {
+    if (mode != null) {
+      mode ? emit(ThemeState.dark()) : emit(ThemeState.light());
     } else {
-      emit(ThemeState.light());
+      var prefs = await _prefs;
+      var key = 'isDark';
+
+      if (prefs.containsKey(key)) {
+        var prefMode = prefs.getBool(key)!;
+
+        if (prefMode) {
+          prefs.setBool(key, ThemeState.light().isDark);
+          emit(ThemeState.light());
+        } else {
+          prefs.setBool(key, ThemeState.dark().isDark);
+          emit(ThemeState.dark());
+        }
+      } else {
+        prefs.setBool(key, ThemeState.light().isDark);
+      }
     }
   }
 }

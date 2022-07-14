@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks/src/cubits/cubits.dart';
+import 'package:tasks/src/router/router.dart';
 import 'package:tasks/src/ui/helpers/helpers.dart';
 
 class AddTaskBar extends StatelessWidget {
@@ -38,7 +40,9 @@ class AddTaskBar extends StatelessWidget {
               ],
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                AutoRouter.of(context).push(const AddTaskRoute());
+              },
               style: ElevatedButton.styleFrom(
                 primary: kcBlueColor,
                 shape: const StadiumBorder(),
@@ -47,6 +51,7 @@ class AddTaskBar extends StatelessWidget {
               child: Row(
                 children: const <Widget>[
                   Icon(Icons.add_circle_outline_sharp),
+                  SizedBox(width: 5.0),
                   Text('Add Task'),
                 ],
               ),
