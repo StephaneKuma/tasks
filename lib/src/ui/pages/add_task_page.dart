@@ -24,6 +24,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final List<String> _repeatList = ['None', 'Daily', 'Weekly', 'Monthly'];
   int _selectedColor = 0;
 
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeState>(
@@ -59,215 +61,226 @@ class _AddTaskPageState extends State<AddTaskPage> {
               vertical: 5.0,
             ),
             child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Add Task',
-                    style: ksHeading,
-                  ),
-                  const InputField(
-                    title: 'Title',
-                    hint: 'Enter you title',
-                  ),
-                  const InputField(
-                    title: 'Note',
-                    hint: 'Enter you note',
-                  ),
-                  InputField(
-                    title: 'Date',
-                    hint: DateFormat.yMd().format(_selectedDate),
-                    widget: IconButton(
-                      onPressed: () => _getDate(),
-                      icon: const Icon(
-                        Icons.calendar_today_outlined,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: InputField(
-                          title: 'Start time',
-                          hint: _startTime,
-                          widget: IconButton(
-                            onPressed: () {
-                              _getTime(
-                                onSuccess: (value) {
-                                  setState(() {
-                                    _startTime = value.format(context);
-                                  });
-                                },
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.access_time_rounded,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12.0),
-                      Expanded(
-                        child: InputField(
-                          title: 'End time',
-                          hint: _endTime,
-                          widget: IconButton(
-                            onPressed: () {
-                              _getTime(
-                                onSuccess: (value) {
-                                  setState(() {
-                                    _endTime = value.format(context);
-                                  });
-                                },
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.access_time_rounded,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  InputField(
-                    title: 'Remind',
-                    hint: '$_selectedRemind minutes early',
-                    widget: DropdownButton(
-                      icon: const Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Colors.grey,
-                      ),
-                      iconSize: 32.0,
-                      elevation: 4,
-                      style: ksSubTitle,
-                      underline: Container(height: 0),
-                      onChanged: (String? value) {
-                        setState(() {
-                          _selectedRemind = int.parse(value!);
-                        });
-                      },
-                      items: _remindList
-                          .map<DropdownMenuItem<String>>(
-                            (int value) => DropdownMenuItem<String>(
-                              value: value.toString(),
-                              child: Text(
-                                value.toString(),
-                                style: ksSubTitle.copyWith(color: Colors.grey),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                  InputField(
-                    title: 'Repeat',
-                    hint: _selectedRepeat,
-                    widget: DropdownButton(
-                      icon: const Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Colors.grey,
-                      ),
-                      iconSize: 32.0,
-                      elevation: 4,
-                      style: ksSubTitle,
-                      underline: Container(height: 0),
-                      onChanged: (String? value) {
-                        setState(() {
-                          _selectedRepeat = value!;
-                        });
-                      },
-                      items: _repeatList
-                          .map<DropdownMenuItem<String>>(
-                            (String value) => DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                value,
-                                style: ksSubTitle.copyWith(color: Colors.grey),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 8.0,
-                      bottom: 10.0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+              child: BlocBuilder<TaskCubit, TaskState>(
+                builder: (context, state) {
+                  return Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Color',
-                              style: ksTitle,
+                        Text(
+                          'Add Task',
+                          style: ksHeading,
+                        ),
+                        const InputField(
+                          title: 'Title',
+                          hint: 'Enter you title',
+                        ),
+                        const InputField(
+                          title: 'Note',
+                          hint: 'Enter you note',
+                        ),
+                        InputField(
+                          title: 'Date',
+                          hint: DateFormat.yMd().format(_selectedDate),
+                          widget: IconButton(
+                            onPressed: () => _getDate(),
+                            icon: const Icon(
+                              Icons.calendar_today_outlined,
+                              color: Colors.grey,
                             ),
-                            const SizedBox(height: 10.0),
-                            Wrap(
-                              children: List<Widget>.generate(
-                                3,
-                                (index) => InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedColor = index;
-                                    });
+                          ),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: InputField(
+                                title: 'Start time',
+                                hint: _startTime,
+                                widget: IconButton(
+                                  onPressed: () {
+                                    _getTime(
+                                      onSuccess: (value) {
+                                        setState(() {
+                                          _startTime = value.format(context);
+                                        });
+                                      },
+                                    );
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: CircleAvatar(
-                                      radius: 14.0,
-                                      backgroundColor: index == 0
-                                          ? kcBlueColor
-                                          : index == 1
-                                              ? kcPinkColor
-                                              : kcYellowColor,
-                                      child: _selectedColor == index
-                                          ? const Icon(
-                                              Icons.done,
-                                              color: Colors.white,
-                                            )
-                                          : const SizedBox(),
-                                    ),
+                                  icon: const Icon(
+                                    Icons.access_time_rounded,
+                                    color: Colors.grey,
                                   ),
                                 ),
                               ),
-                            )
+                            ),
+                            const SizedBox(width: 12.0),
+                            Expanded(
+                              child: InputField(
+                                title: 'End time',
+                                hint: _endTime,
+                                widget: IconButton(
+                                  onPressed: () {
+                                    _getTime(
+                                      onSuccess: (value) {
+                                        setState(() {
+                                          _endTime = value.format(context);
+                                        });
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.access_time_rounded,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // TODO: Save
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Ongoing implementation'),
-                              ),
-                            );
-
-                            AutoRouter.of(context).push(const HomeRoute());
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: kcBlueColor,
-                            shape: const StadiumBorder(),
-                            fixedSize: const Size.fromHeight(50.0),
+                        InputField(
+                          title: 'Remind',
+                          hint: '$_selectedRemind minutes early',
+                          widget: DropdownButton(
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.grey,
+                            ),
+                            iconSize: 32.0,
+                            elevation: 4,
+                            style: ksSubTitle,
+                            underline: Container(height: 0),
+                            onChanged: (String? value) {
+                              setState(() {
+                                _selectedRemind = int.parse(value!);
+                              });
+                            },
+                            items: _remindList
+                                .map<DropdownMenuItem<String>>(
+                                  (int value) => DropdownMenuItem<String>(
+                                    value: value.toString(),
+                                    child: Text(
+                                      value.toString(),
+                                      style: ksSubTitle.copyWith(
+                                          color: Colors.grey),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                        InputField(
+                          title: 'Repeat',
+                          hint: _selectedRepeat,
+                          widget: DropdownButton(
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.grey,
+                            ),
+                            iconSize: 32.0,
+                            elevation: 4,
+                            style: ksSubTitle,
+                            underline: Container(height: 0),
+                            onChanged: (String? value) {
+                              setState(() {
+                                _selectedRepeat = value!;
+                              });
+                            },
+                            items: _repeatList
+                                .map<DropdownMenuItem<String>>(
+                                  (String value) => DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
+                                      value,
+                                      style: ksSubTitle.copyWith(
+                                          color: Colors.grey),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(
+                            top: 8.0,
+                            bottom: 10.0,
                           ),
                           child: Row(
-                            children: const <Widget>[
-                              Icon(Icons.save),
-                              SizedBox(width: 5.0),
-                              Text('Create Task'),
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Color',
+                                    style: ksTitle,
+                                  ),
+                                  const SizedBox(height: 10.0),
+                                  Wrap(
+                                    children: List<Widget>.generate(
+                                      3,
+                                      (index) => InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedColor = index;
+                                          });
+                                        },
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8.0),
+                                          child: CircleAvatar(
+                                            radius: 14.0,
+                                            backgroundColor: index == 0
+                                                ? kcBlueColor
+                                                : index == 1
+                                                    ? kcPinkColor
+                                                    : kcYellowColor,
+                                            child: _selectedColor == index
+                                                ? const Icon(
+                                                    Icons.done,
+                                                    color: Colors.white,
+                                                  )
+                                                : const SizedBox(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // TODO: Save
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Ongoing implementation'),
+                                    ),
+                                  );
+
+                                  AutoRouter.of(context)
+                                      .push(const HomeRoute());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: kcBlueColor,
+                                  shape: const StadiumBorder(),
+                                  fixedSize: const Size.fromHeight(50.0),
+                                ),
+                                child: Row(
+                                  children: const <Widget>[
+                                    Icon(Icons.save),
+                                    SizedBox(width: 5.0),
+                                    Text('Create Task'),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         )
                       ],
                     ),
-                  )
-                ],
+                  );
+                },
               ),
             ),
           ),
