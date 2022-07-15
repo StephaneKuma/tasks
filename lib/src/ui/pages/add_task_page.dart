@@ -17,7 +17,7 @@ class AddTaskPage extends StatefulWidget {
 class _AddTaskPageState extends State<AddTaskPage> {
   DateTime _selectedDate = DateTime.now();
   String _startTime = DateFormat('hh:mm a').format(DateTime.now()).toString();
-  String _endTime = "09:30 PM";
+  String _endTime = "12:30 PM";
   int _selectedRemind = 5;
   final List<int> _remindList = [5, 10, 15, 20, 25, 30];
   String _selectedRepeat = 'None';
@@ -72,19 +72,35 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           'Add Task',
                           style: ksHeading,
                         ),
-                        const InputField(
+                        InputField(
                           title: 'Title',
                           hint: 'Enter you title',
+                          onChange: (value) {
+                            var title = value as String;
+                            context
+                                .read<TaskCubit>()
+                                .onTitleChanged(title: title);
+                          },
                         ),
-                        const InputField(
+                        InputField(
                           title: 'Note',
                           hint: 'Enter you note',
+                          onChange: (value) {
+                            var note = value as String;
+                            context.read<TaskCubit>().onNoteChanged(note: note);
+                          },
                         ),
                         InputField(
                           title: 'Date',
                           hint: DateFormat.yMd().format(_selectedDate),
                           widget: IconButton(
-                            onPressed: () => _getDate(),
+                            onPressed: () {
+                              _getDate();
+                              context.read<TaskCubit>().onDateChanged(
+                                    date:
+                                        DateFormat.yMd().format(_selectedDate),
+                                  );
+                            },
                             icon: const Icon(
                               Icons.calendar_today_outlined,
                               color: Colors.grey,
@@ -104,6 +120,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                         setState(() {
                                           _startTime = value.format(context);
                                         });
+                                        context
+                                            .read<TaskCubit>()
+                                            .onStartTimeChanged(
+                                              startTime: _startTime,
+                                            );
                                       },
                                     );
                                   },
@@ -126,6 +147,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                         setState(() {
                                           _endTime = value.format(context);
                                         });
+                                        context
+                                            .read<TaskCubit>()
+                                            .onEndTimeChanged(
+                                              endTime: _endTime,
+                                            );
                                       },
                                     );
                                   },
@@ -154,6 +180,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               setState(() {
                                 _selectedRemind = int.parse(value!);
                               });
+                              context
+                                  .read<TaskCubit>()
+                                  .onRemindChanged(remind: _selectedRemind);
                             },
                             items: _remindList
                                 .map<DropdownMenuItem<String>>(
@@ -185,6 +214,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               setState(() {
                                 _selectedRepeat = value!;
                               });
+                              context
+                                  .read<TaskCubit>()
+                                  .onRepeatChanged(repeat: _selectedRepeat);
                             },
                             items: _repeatList
                                 .map<DropdownMenuItem<String>>(
@@ -225,6 +257,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                           setState(() {
                                             _selectedColor = index;
                                           });
+                                          context
+                                              .read<TaskCubit>()
+                                              .onColorChanged(
+                                                color: _selectedColor,
+                                              );
                                         },
                                         child: Padding(
                                           padding:
@@ -251,7 +288,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  // TODO: Save
+                                  context.read<TaskCubit>().save();
+
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text('Ongoing implementation'),

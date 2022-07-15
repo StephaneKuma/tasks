@@ -47,7 +47,7 @@ class TaskCubit extends Cubit<TaskState> {
     emit(state.copyWith(repeat: repeat));
   }
 
-  Future save() async {
+  Future<void> save() async {
     if (state.status == TaskStatus.submitting) return;
 
     emit(state.copyWith(status: TaskStatus.submitting));

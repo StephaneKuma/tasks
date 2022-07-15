@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:hive/hive.dart';
 import 'package:tasks/src/models/models.dart';
 import 'package:tasks/src/repositories/hive_api.dart';
 
 class TaskRepository implements HiveApi<Task> {
   final String name = 'taks';
+  final StreamController<List<Task>?> _tasksController =
+      StreamController<List<Task>?>.broadcast();
 
   @override
   Future<void> addToBox({required Box<Task> box, required Task entity}) async {
@@ -16,6 +20,15 @@ class TaskRepository implements HiveApi<Task> {
   }
 
   @override
+  Stream<List<Task>?> listenToEntities({required Box<Task> box}) {
+    var tasks = getEntities(box: box);
+
+    tasks.isEmpty ? _tasksController.add(null) : _tasksController.add(tasks);
+
+    return _tasksController.stream;
+  }
+
+  @override
   Future<Box<Task>> openBox() async {
     Box<Task> box = await Hive.openBox<Task>(name);
 
@@ -23,7 +36,8 @@ class TaskRepository implements HiveApi<Task> {
   }
 
   @override
-  Future<void> removeFromBox({required Box<Task> box, required Task entity}) async {
+  Future<void> removeFromBox(
+      {required Box<Task> box, required Task entity}) async {
     await box.delete(entity.id);
   }
 }
