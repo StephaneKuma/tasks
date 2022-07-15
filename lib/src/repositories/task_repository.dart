@@ -6,11 +6,11 @@ import 'package:tasks/src/repositories/hive_api.dart';
 
 class TaskRepository implements HiveApi<Task> {
   final String name = 'taks';
-  final StreamController<List<Task>?> _tasksController =
-      StreamController<List<Task>?>.broadcast();
+  final StreamController<List<Task>> _tasksController =
+      StreamController<List<Task>>.broadcast();
 
   @override
-  Future<void> addToBox({required Box<Task> box, required Task entity}) async {
+  Future<void> saveToBox({required Box<Task> box, required Task entity}) async {
     await box.put(entity.id, entity);
   }
 
@@ -20,10 +20,15 @@ class TaskRepository implements HiveApi<Task> {
   }
 
   @override
-  Stream<List<Task>?> listenToEntities({required Box<Task> box}) {
+  Stream<List<Task>> listenToEntities({required Box<Task> box}) {
     var tasks = getEntities(box: box);
 
-    tasks.isEmpty ? _tasksController.add(null) : _tasksController.add(tasks);
+    tasks.isEmpty
+        ? _tasksController.add(<Task>[])
+        : _tasksController.add(tasks);
+
+    print('Listening');
+    print('Task numner: ${tasks.length}');
 
     return _tasksController.stream;
   }

@@ -1,42 +1,24 @@
 part of 'task_bloc.dart';
 
-abstract class TaskState extends Equatable {
-  const TaskState();
+abstract class TaskBlocState extends Equatable {
+  const TaskBlocState();
 
   @override
   List<Object> get props => [];
 }
 
-class TaskLoading extends TaskState {}
+class TaskLoading extends TaskBlocState {}
 
-class TaskLoaded extends TaskState {
+class TaskLoaded extends TaskBlocState {
   final List<Task> tasks;
 
   const TaskLoaded({
     this.tasks = const <Task>[],
   });
 
-  TaskLoaded copyWith({
-    List<Task>? tasks,
-  }) {
-    return TaskLoaded(
-      tasks: tasks ?? this.tasks,
-    );
-  }
-
   @override
   List<Object> get props => [tasks];
 
   @override
   String toString() => 'TaskLoaded(tasks: $tasks)';
-
-  @override
-  bool operator ==(covariant TaskLoaded other) {
-    if (identical(this, other)) return true;
-
-    return listEquals(other.tasks, tasks);
-  }
-
-  @override
-  int get hashCode => tasks.hashCode;
 }

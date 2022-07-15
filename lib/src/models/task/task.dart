@@ -39,7 +39,7 @@ class Task extends Equatable {
     required this.id,
     required this.title,
     required this.note,
-    required this.isCompleted,
+    this.isCompleted = 0,
     required this.date,
     required this.startTime,
     required this.endTime,

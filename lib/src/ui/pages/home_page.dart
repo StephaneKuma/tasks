@@ -67,9 +67,12 @@ class _HomePageState extends State<HomePage> {
             ),
             child: SingleChildScrollView(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: const <Widget>[
                   AddTaskBar(),
                   DateSelectionBar(),
+                  SizedBox(height: 20.0),
+                  TaskList(),
                 ],
               ),
             ),

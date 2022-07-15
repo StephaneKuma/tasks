@@ -5,9 +5,9 @@ abstract class HiveApi<T> {
 
   List<T> getEntities({required Box<T> box});
 
-  Stream<List<T>?> listenToEntities({required Box<T> box});
+  Stream<List<T>> listenToEntities({required Box<T> box});
 
-  Future<void> addToBox({required Box<T> box, required T entity});
+  Future<void> saveToBox({required Box<T> box, required T entity});
 
   Future<void> removeFromBox({required Box<T> box, required T entity});
 }

@@ -17,3 +17,19 @@ class UpdateTasks extends TaskEvent {
   @override
   List<Object> get props => [tasks];
 }
+
+class CompletedTask extends TaskEvent {
+  final Task task;
+
+  const CompletedTask({required this.task});
+  @override
+  List<Object> get props => [task];
+}
+
+class DeleteTask extends TaskEvent {
+  final Task task;
+
+  const DeleteTask({required this.task});
+  @override
+  List<Object> get props => [task];
+}

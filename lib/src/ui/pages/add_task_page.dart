@@ -66,6 +66,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   return Form(
                     key: _formKey,
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
@@ -87,7 +88,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           hint: 'Enter you note',
                           onChange: (value) {
                             var note = value as String;
-                            context.read<TaskCubit>().onNoteChanged(note: note);
+                            context
+                                .read<TaskCubit>()
+                                .onNoteChanged(note: note);
                           },
                         ),
                         InputField(
@@ -97,8 +100,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             onPressed: () {
                               _getDate();
                               context.read<TaskCubit>().onDateChanged(
-                                    date:
-                                        DateFormat.yMd().format(_selectedDate),
+                                    date: DateFormat.yMd()
+                                        .format(_selectedDate),
                                   );
                             },
                             icon: const Icon(
@@ -118,7 +121,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                     _getTime(
                                       onSuccess: (value) {
                                         setState(() {
-                                          _startTime = value.format(context);
+                                          _startTime =
+                                              value.format(context);
                                         });
                                         context
                                             .read<TaskCubit>()
@@ -220,7 +224,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             },
                             items: _repeatList
                                 .map<DropdownMenuItem<String>>(
-                                  (String value) => DropdownMenuItem<String>(
+                                  (String value) =>
+                                      DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(
                                       value,
@@ -238,11 +243,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             bottom: 10.0,
                           ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
                                     'Color',
@@ -264,8 +271,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                               );
                                         },
                                         child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 8.0),
+                                          padding: const EdgeInsets.only(
+                                              right: 8.0),
                                           child: CircleAvatar(
                                             radius: 14.0,
                                             backgroundColor: index == 0
@@ -290,9 +297,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 onPressed: () {
                                   context.read<TaskCubit>().save();
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(
                                     const SnackBar(
-                                      content: Text('Ongoing implementation'),
+                                      content:
+                                          Text('Your task is saved'),
                                     ),
                                   );
 

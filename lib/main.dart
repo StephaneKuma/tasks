@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasks/src/blocs/blocs.dart';
 import 'package:tasks/src/cubits/cubits.dart';
+import 'package:tasks/src/models/models.dart';
 import 'package:tasks/src/repositories/repositories.dart';
 import 'package:tasks/src/router/router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Hive.initFlutter();
+
+  await Hive.initFlutter();
+  Hive.registerAdapter(TaskAdapter());
+
   BlocOverrides.runZoned(
     () => runApp(const MyApp()),
     blocObserver: AppBlocObserver(),
@@ -23,17 +28,22 @@ class MyApp extends StatelessWidget {
     final router = AppRouter();
 
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (_) => TaskRepository()),
+      providers: <RepositoryProvider>[
+        RepositoryProvider<TaskRepository>(create: (_) => TaskRepository()),
       ],
       child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => ThemeCubit()),
-          BlocProvider(
+        providers: <BlocProvider>[
+          BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
+          BlocProvider<TaskCubit>(
             create: (context) => TaskCubit(
               repository: context.read<TaskRepository>(),
             ),
-          )
+          ),
+          BlocProvider<TaskBloc>(
+            create: (context) => TaskBloc(
+              repository: context.read<TaskRepository>(),
+            ),
+          ),
         ],
         child: BlocConsumer<ThemeCubit, ThemeState>(
           buildWhen: (previous, current) => previous.status != current.status,

@@ -54,7 +54,7 @@ class TaskCubit extends Cubit<TaskState> {
 
     try {
       var box = await repository.openBox();
-      await repository.addToBox(
+      await repository.saveToBox(
         box: box,
         entity: Task(
           id: const Uuid().v4(),
