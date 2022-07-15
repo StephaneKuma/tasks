@@ -24,7 +24,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final List<String> _repeatList = ['None', 'Daily', 'Weekly', 'Monthly'];
   int _selectedColor = 0;
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {

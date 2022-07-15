@@ -3,27 +3,27 @@ import 'package:tasks/src/models/models.dart';
 import 'package:tasks/src/repositories/hive_api.dart';
 
 class TaskRepository implements HiveApi<Task> {
+  final String name = 'taks';
+
   @override
-  Future<void> addToBox({required Box box, required Task entity}) {
-    // TODO: implement addToBox
-    throw UnimplementedError();
+  Future<void> addToBox({required Box<Task> box, required Task entity}) async {
+    await box.put(entity.id, entity);
   }
 
   @override
-  List<Task> getEntities({required Box box}) {
-    // TODO: implement getEntity
-    throw UnimplementedError();
+  List<Task> getEntities({required Box<Task> box}) {
+    return box.values.toList();
   }
 
   @override
-  Future<Box> openBox() {
-    // TODO: implement openBox
-    throw UnimplementedError();
+  Future<Box<Task>> openBox() async {
+    Box<Task> box = await Hive.openBox<Task>(name);
+
+    return box;
   }
 
   @override
-  Future<void> removeFromBox({required Box box, required Task entity}) {
-    // TODO: implement removeFromBox
-    throw UnimplementedError();
+  Future<void> removeFromBox({required Box<Task> box, required Task entity}) async {
+    await box.delete(entity.id);
   }
 }

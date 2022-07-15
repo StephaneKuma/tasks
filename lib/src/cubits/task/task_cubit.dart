@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:hive/hive.dart';
 import 'package:tasks/src/models/models.dart';
 import 'package:tasks/src/repositories/repositories.dart';
 import 'package:uuid/uuid.dart';
@@ -54,7 +53,7 @@ class TaskCubit extends Cubit<TaskState> {
     emit(state.copyWith(status: TaskStatus.submitting));
 
     try {
-      Box box = await repository.openBox();
+      var box = await repository.openBox();
       await repository.addToBox(
         box: box,
         entity: Task(

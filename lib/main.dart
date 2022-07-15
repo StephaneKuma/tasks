@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasks/src/blocs/blocs.dart';
 import 'package:tasks/src/cubits/cubits.dart';
+import 'package:tasks/src/repositories/repositories.dart';
 import 'package:tasks/src/router/router.dart';
 
 Future<void> main() async {
@@ -21,37 +22,45 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = AppRouter();
 
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider(
-          create: (_) => ThemeCubit(),
-        ),
+        RepositoryProvider(create: (_) => TaskRepository()),
       ],
-      child: BlocConsumer<ThemeCubit, ThemeState>(
-        buildWhen: (previous, current) => previous.status != current.status,
-        listener: (context, state) {
-          SharedPreferences.getInstance().then((prefs) {
-            String key = 'isDark';
-            bool isDark;
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => ThemeCubit()),
+          BlocProvider(
+            create: (context) => TaskCubit(
+              repository: context.read<TaskRepository>(),
+            ),
+          )
+        ],
+        child: BlocConsumer<ThemeCubit, ThemeState>(
+          buildWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {
+            SharedPreferences.getInstance().then((prefs) {
+              String key = 'isDark';
+              bool isDark;
 
-            if (prefs.containsKey(key) && prefs.getBool(key) != null) {
-              isDark = prefs.getBool(key)!;
-            } else {
-              isDark = ThemeState.light().isDark;
-              prefs.setBool(key, isDark);
-            }
+              if (prefs.containsKey(key) && prefs.getBool(key) != null) {
+                isDark = prefs.getBool(key)!;
+              } else {
+                isDark = ThemeState.light().isDark;
+                prefs.setBool(key, isDark);
+              }
 
-            context.read<ThemeCubit>().onChangeTheme(mode: isDark);
-          });
-        },
-        builder: (context, state) {
-          return MaterialApp.router(
-            theme: state.theme,
-            debugShowCheckedModeBanner: false,
-            routerDelegate: router.delegate(),
-            routeInformationParser: router.defaultRouteParser(),
-          );
-        },
+              context.read<ThemeCubit>().onChangeTheme(mode: isDark);
+            });
+          },
+          builder: (context, state) {
+            return MaterialApp.router(
+              theme: state.theme,
+              debugShowCheckedModeBanner: false,
+              routerDelegate: router.delegate(),
+              routeInformationParser: router.defaultRouteParser(),
+            );
+          },
+        ),
       ),
     );
   }
